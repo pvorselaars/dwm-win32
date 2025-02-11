@@ -36,11 +36,6 @@
 #define HEIGHT(x)               ((x)->h + 2 * (x)->bw)
 #define TAGMASK                 ((int)((1LL << LENGTH(tags)) - 1))
 #define TEXTW(x)                (textnw(x, strlen(x)))
-#ifdef NDEBUG
-# define debug(format, args...) do { } while(false)
-#else
-# define debug eprint
-#endif
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast };		/* cursor */
@@ -124,7 +119,7 @@ static void drawbar(void);
 static void drawsquare(bool filled, bool empty, bool invert, unsigned long col[ColLast]);
 static void drawtext(const char *text, unsigned long col[ColLast], bool invert);
 void drawborder(Client *c, COLORREF color);
-void eprint(const char *errstr, ...);
+void debug(const char *errstr, ...);
 static void focus(Client *c);
 static void focusstack(const Arg *arg);
 static Client *getclient(HWND hwnd);
@@ -427,7 +422,7 @@ drawtext(const char *text, COLORREF col[ColLast], bool invert) {
 }
 
 void
-eprint(const char *errstr, ...) {
+debug(const char *errstr, ...) {
 	va_list ap;
 
 	va_start(ap, errstr);
@@ -1298,6 +1293,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	MSG msg;
 
 	setup(hInstance);
+
+#ifdef DEBUG
+	AttachConsole(ATTACH_PARENT_PROCESS);
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
+	fclose(stdin);
+#endif
 
 	while (GetMessage(&msg, NULL, 0, 0) > 0) {
 		TranslateMessage(&msg);
