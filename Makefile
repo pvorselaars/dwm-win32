@@ -1,17 +1,23 @@
 # dwm-win32 - dynamic window manager for win32
 # See LICENSE file for copyright and license details.
 
-LDFLAGS = user32.lib shell32.lib gdi32.lib
+CC      = cl
+CFLAGS  = /c
+LDFLAGS = user32.lib shell32.lib gdi32.lib /link
 
 SRC = dwm-win32.c
 EXE = ${SRC:.c=.exe}
 OBJ = ${SRC:.c=.obj}
 
 ${EXE}: ${OBJ}
-	cl ${OBJ} ${LDFLAGS} /link
+	${CC} ${OBJ} ${LDFLAGS}
 
 %.obj: %.c
-	cl /c $<
+	${CC} ${CFLAGS} $<
+
+debug: CFLAGS += /Zi
+debug: LDFLAGS += /debug
+debug: ${EXE}
 
 config.h:
 	cp config.def.h $@
@@ -19,4 +25,4 @@ config.h:
 clean:
 	rm -f ${EXE} ${OBJ}
 
-.PHONY: clean
+.PHONY: clean debug
