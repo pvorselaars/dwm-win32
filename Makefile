@@ -9,7 +9,7 @@ SRC = dwm-win32.c
 EXE = ${SRC:.c=.exe}
 OBJ = ${SRC:.c=.obj}
 
-${EXE}: ${OBJ} config.h
+${EXE}: ${OBJ}
 	${CC} ${OBJ} ${LDFLAGS}
 
 %.obj: %.c
